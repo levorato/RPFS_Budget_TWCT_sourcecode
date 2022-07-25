@@ -24,7 +24,7 @@ Here's a brief description of each column:
 * `instance_type`: type of instance generated (e.g., `ying` instances follow the generation recipe introduced by Ying (2015)).
 * `instance_name`: instance filename (instances are located in the folder `instances/robust/ying/rob-pfsp-wct` of this repository). 
 * `RobCost_Gamma`: budget parameter Gamma ($0 \leq \Gamma \leq mn$) value used to solve the instance. This parameter has a maximum value of $mn$ (number of operations).  
-* `Gamma%`: relative budget parameter $\Gamma %$ value used to solve the instance: $\Gamma % = 100 \times \Gamma / (m n)$.
+* `Gamma%`: relative budget parameter $\Gamma$ % value used to solve the instance: Gamma % $ = 100 \Gamma / (m n)$.
 * `wct`: Total Weighted Completion Time (TWCT) value returned by the solution method. 
 * `permutation`: the job permutation $\sigma$ returned as solution.
 * `time`: total time spent to solve the problem (includes Master Problem and Sub Problem solution times). 
