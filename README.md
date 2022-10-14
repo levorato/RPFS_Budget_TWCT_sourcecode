@@ -1,7 +1,21 @@
 # RPFS_Budget_TWCT
-m-machine Robust Permutation Flow Shop Problem under budgeted uncertainty, Total Weighted Completion Time Objective (Rob-PFSP-TWCT) : Source code and experiment result files
+m-machine Robust Permutation Flow Shop Problem under budgeted uncertainty, Total Weighted Completion Time Objective (Rob-PFSP-TWCT) : Source code and experiment result files for the paper `Robust permutation flow shop total weighted completion time problem: solution and application to the oil and gas industry`.
 
-## Instructions
+* Column-and-Constraint Generation (C&CG) exact algorithms implemented in Julia and C++
+
+You are free to use the source code and problem instances, if you cite the following work (to be published):
+
+```
+@article{Levorato2022,
+author = {Levorato, M. and Sotelo, D. and Figueiredo, R. and Frota, Y.},
+journal = {Computers \& Operations Research},
+keywords = {Scheduling, Robust Optimization, Permutation Flow Shop, Total Weighted Completion Time, Offshore platform maintenance},
+title = {{Robust permutation flow shop total weighted completion time problem: solution and application to the oil and gas industry}},
+year = {2022}
+}
+```
+
+# Experimental Data - Instructions
 
 ### Instance files for Rob-PFSP-TWCT
 
@@ -54,15 +68,149 @@ year = {2015}
 }
 ```
 
-You are free to use the source code and problem instances, if you cite the following work:
+
+# Build instructions for the C++ program (Hybrid C&CG algorithm)
+
+The following instructions are based on Ubuntu Linux 20.04 (Focal Fossa).
+
+## 1. Ubuntu Linux packages intallation
 
 ```
-@article{Levorato2022,
-author = {Levorato, M. and Sotelo, D. and Figueiredo, R. and Frota, Y.},
-journal = {Computers and Operations Research},
-keywords = {Scheduling, Robust Optimization, Permutation Flow Shop, Total Weighted Completion Time, Offshore platform maintenance},
-title = {{Robust permutation flow shop total weighted completion time problem: solution and application to the oil and gas industry}},
-year = {2022}
-}
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends ca-certificates bzip2 curl wget tar nano zip unzip
+sudo apt-get install -y --no-install-recommends cmake file git g++ build-essential cmake libboost-all-dev
 ```
+
+## 2. Clone the `glog` repo library into the `glog` folder
+
+* Inside the `RPFS_Budget_TWCT` folder, run:
+
+```
+git submodule update --init
+```
+
+
+## 3. Build the RPFS_Budget_TWCT project
+
+### 3.1. Run cmake
+
+```
+mkdir build
+cd build
+cmake ..
+```
+
+### 3.2. Run make
+
+```
+make
+```
+
+* The `pfsp` executable will be available in the folder `bin`, inside the project folder.
+
+
+## 4. Run the Hybrid C&CG program
+
+### 4.1. Run the Hybrid C&CG program (C++)
+
+* From the project folder, run the program using the arguments:
+```
+./bin/pfsp --input-file-dir ./instances/random/v2 --output-folder ./output --model-version=607
+```
+* Or use one of the existing Julia experiment scripts, located in the folder `src/julia/experiments/wct/global` (e.g., `wct_bud_sep_hybrid-tba_10x5.sh` for the Hybrid C&CG algorithm). **Note:** to run these scripts, you need to setup the Julia C&CG program before (see the next instructions). 
+
+
+# Run instructions for the Julia C&CG program
+
+## 1. Gurobi installation
+
+### 1.1. Download Gurobi installer and obtain the `.lic` license file
+
+* Download Gurobi installer from its website.
+* Obtain the Gurobi license file `gurobi.lic` from its website (academic license can be obtained from Gurobi website for free).
+
+### 1.2. Decompress Gurobi into the installation folder
+
+* Copy the downloaded installer into the `/opt` folder (or into your home folder if you do not posses admin privileges):
+```
+sudo cp /home/ubuntu/Downloads/gurobi9.5.2_linux64.tar.gz /opt
+```
+* Decompress the file. A new folder named `gurobi952` will appear.
+```
+tar -xvf gurobi9.5.2_linux64.tar.gz
+```
+
+### 1.3. Copy the downloaded `gurobi.lic` license file to your home folder
+
+```
+cp /home/ubuntu/Downloads/gurobi.lic /home/ubuntu/gurobi.lic
+```
+
+### 1.4. Setup Gurobi environment variables
+
+* Configure the following environment variables, where `<installdir> = /opt/gurobi952/linux64`:
+```
+GUROBI_HOME should point to your <installdir>.
+PATH should be extended to include <installdir>/bin.
+LD_LIBRARY_PATH should be extended to include <installdir>/lib.
+```
+* Bash shell users should add the following lines into the `.bashrc` file:
+```
+export GUROBI_HOME="/opt/gurobi952/linux64"
+export PATH="${PATH}:${GUROBI_HOME}/bin"
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GUROBI_HOME}/lib"
+```
+* If the environment variable `LD_LIBRARY_PATH` is not defined in the `.bashrc` file, add the following replacement line:
+```
+export LD_LIBRARY_PATH="${GUROBI_HOME}/lib"
+```
+
+
+## 2. CPLEX Installation
+
+### 2.1. Download CPLEX installer from IBM website
+
+* Download CPLEX installer from its website (academic licenses can be obtained from IBM website for free).
+
+### 2.2. Run CPLEX installer
+
+* [Follow the instructions from IBM website](https://www.ibm.com/docs/en/icos/20.1.0?topic=2010-installing-cplex-optimization-studio).
+
+### 2.3. Setup CPLEX environment variables
+
+* In the `~/.bashrc` file, configure `LD_LIBRARY_PATH` before running the program, where `<path_to_cplex_dir>` is the directory where CPLEX was installed (e.g., `/opt/ibm/ILOG/CPLEX_Studio1290`):
+```
+LD_LIBRARY_PATH=<path_to_cplex_dir>/opl/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/concert/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/cplex/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/opl/lib/x86-64_linux/shared_pic:<path_to_cplex_dir>/opl/bin/x86-64_linux
+```
+
+
+## 3. Set-up the application config files
+
+### 3.1. Set the username from the operating system
+
+Edit the file `src/julia/config.jl` and change the variables `USER_NAME` to match your username.
+```
+USER_NAME = "ubuntu"
+```
+
+
+## 4. Julia installation
+
+## 4.1. Download Julia 1.6.0 from its website
+
+https://julialang.org/downloads/
+
+## 4.2. Decompress Julia to your home folder
+```
+cd /home/ubuntu
+tar -xzf julia-1.6.0-linux-x86_64.tar.gz
+```
+
+## 4.3. Run Julia and install the required packages
+
+* Install all the Julia packages listed in the file `src/julia/packages.txt`.
+
+## 4.4. Run one of the Julia experiment script files
+
+* See the folder `src/julia/experiment/wct/global` and choose a file.
 
