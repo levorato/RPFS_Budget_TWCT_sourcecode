@@ -89,10 +89,26 @@ sudo apt-get install -y --no-install-recommends cmake file git g++ build-essenti
 git submodule update --init
 ```
 
+## 3. CPLEX Installation
 
-## 3. Build the RPFS_Budget_TWCT project
+### 3.1. Download CPLEX installer from IBM website
 
-### 3.1. Run cmake
+* Download CPLEX installer from its website (academic licenses can be obtained from IBM website for free).
+
+### 3.2. Run CPLEX installer
+
+* [Follow the instructions from IBM website](https://www.ibm.com/docs/en/icos/20.1.0?topic=2010-installing-cplex-optimization-studio).
+
+### 3.3. Setup CPLEX environment variables
+
+* In the `~/.bashrc` file, configure `LD_LIBRARY_PATH` before running the program, where `<path_to_cplex_dir>` is the directory where CPLEX was installed (e.g., `/opt/ibm/ILOG/CPLEX_Studio1290`):
+```
+LD_LIBRARY_PATH=<path_to_cplex_dir>/opl/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/concert/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/cplex/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/opl/lib/x86-64_linux/shared_pic:<path_to_cplex_dir>/opl/bin/x86-64_linux
+```
+
+## 4. Build the RPFS_Budget_TWCT project
+
+### 4.1. Run cmake
 
 ```
 mkdir build
@@ -100,7 +116,7 @@ cd build
 cmake ..
 ```
 
-### 3.2. Run make
+### 4.2. Run make
 
 ```
 make
@@ -109,9 +125,9 @@ make
 * The `pfsp` executable will be available in the folder `bin`, inside the project folder.
 
 
-## 4. Run the Hybrid C&CG program
+## 5. Run the Hybrid C&CG program
 
-### 4.1. Run the Hybrid C&CG program (C++)
+### 5.1. Run the Hybrid C&CG program (C++)
 
 * From the project folder, run the program using the arguments:
 ```
@@ -166,27 +182,9 @@ export LD_LIBRARY_PATH="${GUROBI_HOME}/lib"
 ```
 
 
-## 2. CPLEX Installation
+## 2. Set-up the application config files
 
-### 2.1. Download CPLEX installer from IBM website
-
-* Download CPLEX installer from its website (academic licenses can be obtained from IBM website for free).
-
-### 2.2. Run CPLEX installer
-
-* [Follow the instructions from IBM website](https://www.ibm.com/docs/en/icos/20.1.0?topic=2010-installing-cplex-optimization-studio).
-
-### 2.3. Setup CPLEX environment variables
-
-* In the `~/.bashrc` file, configure `LD_LIBRARY_PATH` before running the program, where `<path_to_cplex_dir>` is the directory where CPLEX was installed (e.g., `/opt/ibm/ILOG/CPLEX_Studio1290`):
-```
-LD_LIBRARY_PATH=<path_to_cplex_dir>/opl/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/concert/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/cplex/lib/x86-64_linux/static_pic:<path_to_cplex_dir>/opl/lib/x86-64_linux/shared_pic:<path_to_cplex_dir>/opl/bin/x86-64_linux
-```
-
-
-## 3. Set-up the application config files
-
-### 3.1. Set the username from the operating system
+### 2.1. Set the username from the operating system
 
 Edit the file `src/julia/config.jl` and change the variables `USER_NAME` to match your username.
 ```
@@ -194,23 +192,23 @@ USER_NAME = "ubuntu"
 ```
 
 
-## 4. Julia installation
+## 3. Julia installation
 
-## 4.1. Download Julia 1.6.0 from its website
+## 3.1. Download Julia 1.6.0 from its website
 
 https://julialang.org/downloads/
 
-## 4.2. Decompress Julia to your home folder
+## 3.2. Decompress Julia to your home folder
 ```
 cd /home/ubuntu
 tar -xzf julia-1.6.0-linux-x86_64.tar.gz
 ```
 
-## 4.3. Run Julia and install the required packages
+## 3.3. Run Julia and install the required packages
 
 * Install all the Julia packages listed in the file `src/julia/packages.txt`.
 
-## 4.4. Run one of the Julia experiment script files
+## 3.4. Run one of the Julia experiment script files
 
 * See the folder `src/julia/experiment/wct/global` and choose a file.
 
